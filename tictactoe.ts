@@ -35,31 +35,26 @@ export function addMove(symbol: Piece, position: keyof Board) {
 }
  
 export function checkForWin(board: Board) {
-  // return Object.entries(board).reduce(([key, value], accumulator) => {
-    // Check all vertical possibilities for the value
-    const verticalWin = checkForVerticalWin(board["1"], 1)
-    if (verticalWin) {
-      return verticalWin
+  const cells = Object.entries(board)
+  // check each cell's symbol and position
+  // compare cell and symbol with the algorithm for a vertical win
+  let win;
+  cells.forEach((cell) => {
+    if (win) {
+      return win
     }
-    // return accumulator.push(verticalWin)
-  // }, [])
-  // position 1, check the vertical
+    win = checkForVerticalWin(cell[1], cell[0], board)
+  })
+  return win
 }
 
-
-//Stopping point
-//The board is the one with only one x on it. 
-//So we are using the board we altered in move. 
-//When we run the test, the board is the one we changed during hte previous 
-//test to have one move on it. 
-//What we need is the board to be a) passed in as an argument or b) have the 
-// board be controlled separately? try both see what fits.
-
-function checkForVerticalWin (symbol: Piece, position: keyof Board) {
-  if ([1,4,7].includes(position)) {
-    console.log("&&&", board["1"], board["4"], board["7"], board)
+// should we always run through the board, to find if there is a win? 
+// are there other ways?
+function checkForVerticalWin (symbol: Piece, position: string, board: Board) {
+  if (["1","4","7"].includes(position)) {
+    console.log('yes it is in 1,4,7')
+    console.log('what is there', board["1"], board["4"], board["7"])
     if (board["1"] === symbol && board["4"] === symbol && board["7"] === symbol) {
-      // console.log('**checkForVerticalWin**', symbol, position)
       return ["1", "4", "7"]
     }
   }
