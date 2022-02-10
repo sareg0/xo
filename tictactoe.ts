@@ -1,6 +1,6 @@
 // Board
 
-export type Piece = "x" | "y"
+export type Piece = "x" | "o"
 export type Board = {
   1: null | Piece,
   2: null | Piece,
@@ -56,6 +56,13 @@ function checkForVerticalWin (symbol: Piece, position: string, board: Board) {
     console.log('what is there', board["1"], board["4"], board["7"])
     if (board["1"] === symbol && board["4"] === symbol && board["7"] === symbol) {
       return ["1", "4", "7"]
+    }
+  }
+  if (["2","5","8"].includes(position)) {
+    console.log('yes it is in 2,5,8')
+    console.log('what is there', board["2"], board["5"], board["8"])
+    if (board["2"] === symbol && board["5"] === symbol && board["8"] === symbol) {
+      return ["2", "5", "8"]
     }
   }
 }

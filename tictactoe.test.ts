@@ -12,7 +12,7 @@ const emptyBoard: Board = {
   9: null,
 }
 
-const verticalWin: Board = {
+const verticalWinOne: Board = {
   1: "x",
   2: null,
   3: null,
@@ -21,6 +21,17 @@ const verticalWin: Board = {
   6: null,
   7: "x",
   8: null,
+  9: null,
+}
+const verticalWinTwo: Board = {
+  1: "x",
+  2: "o",
+  3: null,
+  4: "x",
+  5: "o",
+  6: null,
+  7: null,
+  8: "o",
   9: null,
 }
 
@@ -71,10 +82,12 @@ test('makes a move', () => {
 })
 
 test('checks for win', () => {
-  const thing = checkForWin(verticalWin)
+  const winOne = checkForWin(verticalWinOne)
+  const winTwo = checkForWin(verticalWinTwo)
   // winning symbol
   // type of win
   // winning positions
-  expect(thing).toStrictEqual(["1","4","7"])
+  expect(winOne).toStrictEqual(["1","4","7"])
+  expect(winTwo).toStrictEqual(["2","5","8"])
 })
 
