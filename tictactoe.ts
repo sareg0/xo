@@ -57,26 +57,35 @@ function checkForVerticalWin (symbol: Piece, position: string, board: Board) {
     ["3", "6", "9"]
   ]
 
-  let win
+  let win = []
 
-  verticalWins.forEach((verticalWin) => {
-    if (win) {
-      return
+  for (const verticalWin of verticalWins) {
+    if (win.length === 3) {
+    //   console.log('are they equal', ['1','4','7'].entries == ['1','4','7'])
+    //   const hasWon = verticalWins.find(vw => vw.values === win.values)
+    //   if (hasWon) {
+      console.log('win', win)
+      return win
+      // }
     }
+
     if (verticalWin.includes(position)) {
       console.log(`yes position ${position} is in ${verticalWin}. let's see if it has a full win`)
-      win = verticalWin.map((pos) => {
+      verticalWin.map((pos) => {
         console.log(`position ${pos} on the board is value: ${board[`${pos}`]}`)
         if (board[`${pos}`] === symbol) {
           console.log(`add ${pos} to the win`)
           //then look at the next two
-          return pos
+          console.log('win inside verticalWin map', win)
+          win.push(pos) 
           // return ["1", "4", "7"]
+        } else {
+          console.log('nope', board[`${pos}`])
+          win = []
         }
       })
     }
-  })
-  return win
+  }
   // if (["1","4","7"].includes(position)) {
   //   console.log('yes it is in 1,4,7')
   //   console.log('what is there', board["1"], board["4"], board["7"])
