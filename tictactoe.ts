@@ -51,18 +51,44 @@ export function checkForWin(board: Board) {
 // should we always run through the board, to find if there is a win? 
 // are there other ways?
 function checkForVerticalWin (symbol: Piece, position: string, board: Board) {
-  if (["1","4","7"].includes(position)) {
-    console.log('yes it is in 1,4,7')
-    console.log('what is there', board["1"], board["4"], board["7"])
-    if (board["1"] === symbol && board["4"] === symbol && board["7"] === symbol) {
-      return ["1", "4", "7"]
+  const verticalWins = [
+    ["1", "4", "7"],
+    ["2", "5", "8"],
+    ["3", "6", "9"]
+  ]
+
+  let win
+
+  verticalWins.forEach((verticalWin) => {
+    if (win) {
+      return
     }
-  }
-  if (["2","5","8"].includes(position)) {
-    console.log('yes it is in 2,5,8')
-    console.log('what is there', board["2"], board["5"], board["8"])
-    if (board["2"] === symbol && board["5"] === symbol && board["8"] === symbol) {
-      return ["2", "5", "8"]
+    if (verticalWin.includes(position)) {
+      console.log(`yes position ${position} is in ${verticalWin}. let's see if it has a full win`)
+      win = verticalWin.map((pos) => {
+        console.log(`position ${pos} on the board is value: ${board[`${pos}`]}`)
+        if (board[`${pos}`] === symbol) {
+          console.log(`add ${pos} to the win`)
+          //then look at the next two
+          return pos
+          // return ["1", "4", "7"]
+        }
+      })
     }
-  }
+  })
+  return win
+  // if (["1","4","7"].includes(position)) {
+  //   console.log('yes it is in 1,4,7')
+  //   console.log('what is there', board["1"], board["4"], board["7"])
+  //   if (board["1"] === symbol && board["4"] === symbol && board["7"] === symbol) {
+  //     return ["1", "4", "7"]
+  //   }
+  // }
+  // if (["2","5","8"].includes(position)) {
+  //   console.log('yes it is in 2,5,8')
+  //   console.log('what is there', board["2"], board["5"], board["8"])
+  //   if (board["2"] === symbol && board["5"] === symbol && board["8"] === symbol) {
+  //     return ["2", "5", "8"]
+  //   }
+  // }
 }
