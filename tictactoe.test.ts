@@ -35,6 +35,18 @@ const verticalWinTwo: Board = {
   9: null,
 }
 
+const verticalWinThree: Board = {
+  1: "x",
+  2: null,
+  3: "x",
+  4: "x",
+  5: "o",
+  6: "x",
+  7: "o",
+  8: "o",
+  9: "x",
+}
+
 // const horizontalWin = {
 //   1: "o",
 //   2: "o",
@@ -84,10 +96,10 @@ test('makes a move', () => {
 test('checks for win', () => {
   const winOne = checkForWin(verticalWinOne)
   const winTwo = checkForWin(verticalWinTwo)
-  // winning symbol
-  // type of win
-  // winning positions
+  const winThree = checkForWin(verticalWinThree)
+
   expect(winOne).toStrictEqual(["1","4","7"])
   expect(winTwo).toStrictEqual(["2","5","8"])
+  expect(winThree).toStrictEqual(["3","6","9"])
 })
 

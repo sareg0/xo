@@ -50,7 +50,7 @@ export function checkForWin(board: Board) {
 
 // should we always run through the board, to find if there is a win? 
 // are there other ways?
-function checkForVerticalWin (symbol: Piece, position: string, board: Board) {
+function checkForVerticalWin (board: Board) {
   const verticalWins = [
     ["1", "4", "7"],
     ["2", "5", "8"],
@@ -58,46 +58,35 @@ function checkForVerticalWin (symbol: Piece, position: string, board: Board) {
   ]
 
   let win = []
-
   for (const verticalWin of verticalWins) {
+    console.log('verticalWin', verticalWin)    
     if (win.length === 3) {
-    //   console.log('are they equal', ['1','4','7'].entries == ['1','4','7'])
-    //   const hasWon = verticalWins.find(vw => vw.values === win.values)
-    //   if (hasWon) {
-      console.log('win', win)
       return win
-      // }
     }
+    win = verticalWin.reduce((accumulator, currentValue, currentIndex, array) => {
 
-    if (verticalWin.includes(position)) {
-      console.log(`yes position ${position} is in ${verticalWin}. let's see if it has a full win`)
-      verticalWin.map((pos) => {
-        console.log(`position ${pos} on the board is value: ${board[`${pos}`]}`)
-        if (board[`${pos}`] === symbol) {
-          console.log(`add ${pos} to the win`)
-          //then look at the next two
-          console.log('win inside verticalWin map', win)
-          win.push(pos) 
-          // return ["1", "4", "7"]
+      if (board[`${currentValue}`] === null) {
+        accumulator = []
+      } else {
+        // there is a symbol at the cell
+        if (currentIndex === 0) {
+          accumulator.push(currentValue)
         } else {
-          console.log('nope', board[`${pos}`])
-          win = []
+          // If the current cell is the same as the symbol at the last cell
+          console.log(board[`${currentValue}`], board[`${array[currentIndex-1]}`])
+          if (board[`${currentValue}`] === board[`${array[currentIndex-1]}`]) {
+            // push is a mutator. You will mutate the accumulator here, so 
+            // you won't have it as it was before. Consider what other possibilities there
+            // are
+            accumulator.push(currentValue)
+          } else {
+            accumulator = []
+          }
         }
-      })
-    }
+      }
+      console.log('acc', accumulator)
+      return accumulator
+    }, [])
   }
-  // if (["1","4","7"].includes(position)) {
-  //   console.log('yes it is in 1,4,7')
-  //   console.log('what is there', board["1"], board["4"], board["7"])
-  //   if (board["1"] === symbol && board["4"] === symbol && board["7"] === symbol) {
-  //     return ["1", "4", "7"]
-  //   }
-  // }
-  // if (["2","5","8"].includes(position)) {
-  //   console.log('yes it is in 2,5,8')
-  //   console.log('what is there', board["2"], board["5"], board["8"])
-  //   if (board["2"] === symbol && board["5"] === symbol && board["8"] === symbol) {
-  //     return ["2", "5", "8"]
-  //   }
-  // }
+  return win
 }
