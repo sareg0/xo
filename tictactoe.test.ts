@@ -47,30 +47,64 @@ const verticalWinThree: Board = {
   9: "x",
 }
 
-// const horizontalWin = {
-//   1: "o",
-//   2: "o",
-//   3: "o",
-//   4: null,
-//   5: null,
-//   6: null,
-//   7: null,
-//   8: null,
-//   9: null,
-// }
+const diagonalWinOne: Board = {
+  1: "x",
+  2: null,
+  3: null,
+  4: "x",
+  5: "x",
+  6: null,
+  7: "o",
+  8: null,
+  9: "x",
+}
 
-// const diagonalWin = {
-//   1: null,
-//   2: null,
-//   3: "o",
-//   4: null,
-//   5: "o",
-//   6: null,
-//   7: "o",
-//   8: null,
-//   9: null,
-// }
+const diagonalWinTwo: Board = {
+  1: "x",
+  2: null,
+  3: "o",
+  4: "x",
+  5: "o",
+  6: null,
+  7: "o",
+  8: null,
+  9: "x",
+}
 
+const horizontalWinOne: Board = {
+  1: "o",
+  2: "o",
+  3: "o",
+  4: null,
+  5: null,
+  6: null,
+  7: null,
+  8: null,
+  9: null,
+}
+
+const horizontalWinTwo: Board = {
+  1: "o",
+  2: "o",
+  3: null,
+  4: "x",
+  5: "x",
+  6: "x",
+  7: null,
+  8: null,
+  9: null,
+}
+const horizontalWinThree: Board = {
+  1: "o",
+  2: "o",
+  3: null,
+  4: null,
+  5: null,
+  6: null,
+  7: "o",
+  8: "o",
+  9: "o",
+}
 
 
 test('creates empty board', () => {
@@ -103,3 +137,34 @@ test('checks for win', () => {
   expect(winThree).toStrictEqual(["3","6","9"])
 })
 
+test('checks for diagonal win', () => {
+  const winOne = checkForWin(diagonalWinOne)
+  const winTwo = checkForWin(diagonalWinTwo)
+
+  expect(winOne).toStrictEqual(["1","5","9"])
+  expect(winTwo).toStrictEqual(["3","5","7"])
+  
+})
+
+test('checks for horizontal win', () => {
+  const winOne = checkForWin(horizontalWinOne)
+  const winTwo = checkForWin(horizontalWinTwo)
+  const winThree = checkForWin(horizontalWinThree)
+
+  expect(winOne).toStrictEqual(["1","2","3"])
+  expect(winTwo).toStrictEqual(["4","5","6"])
+  expect(winThree).toStrictEqual(["7","8","9"])
+  
+})
+
+
+//What happens when someone ties?
+//Is a tie in noughts and crosses possible?
+//Not in a game where the first to get a streak wins
+
+//How might this game work when you want to say, connect any number
+//of position on a board of any size?
+// e.g. connect four. Could this also be used to do connect 4,
+// with some minor changes.
+
+//How might I organise the tests better?

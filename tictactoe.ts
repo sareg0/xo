@@ -33,53 +33,50 @@ export function addMove(symbol: Piece, position: keyof Board) {
   board[position] = symbol
   return board
 }
- 
-export function checkForWin(board: Board) {
-  const cells = Object.entries(board)
-  // check each cell's symbol and position
-  // compare cell and symbol with the algorithm for a vertical win
-  let win;
-  cells.forEach((cell) => {
-    if (win) {
-      return win
-    }
-    win = checkForVerticalWin(cell[1], cell[0], board)
-  })
-  return win
-}
 
 // should we always run through the board, to find if there is a win? 
-// are there other ways?
-function checkForVerticalWin (board: Board) {
-  const verticalWins = [
-    ["1", "4", "7"],
-    ["2", "5", "8"],
-    ["3", "6", "9"]
+// are there other ways, to narrow it down?
+// What should we do if there is a tie? Should ties be impossible?
+export function checkForWin (board: Board) {
+  const possibleWins = [
+    ["1", "2", "3"], //H
+    ["1", "4", "7"], //V
+    ["1", "5", "9"], //D
+    ["2", "5", "8"], //V
+    ["3", "6", "9"], //v
+    ["3", "5", "7"], //D
+    ["4", "5", "6"], //H
+    ["7", "8", "9"], //H
   ]
 
   let win = []
-  for (const verticalWin of verticalWins) {
-    console.log('verticalWin', verticalWin)    
+  for (const possibleWin of possibleWins) {
     if (win.length === 3) {
       return win
     }
-    win = verticalWin.reduce((accumulator, currentValue, currentIndex, array) => {
-
+    win = possibleWin.reduce((accumulator, currentValue, currentIndex, array) => {
       if (board[`${currentValue}`] === null) {
+        // When there is no value in the cell, take our
+        // streak back to 0
+        // Possible improvement: only zero out the streak if there is a streak length
         accumulator = []
       } else {
-        // there is a symbol at the cell
         if (currentIndex === 0) {
+          // If there is a symbol in the cell and it's the first position of our possible Win
+          // use it to start the streak
           accumulator.push(currentValue)
         } else {
-          // If the current cell is the same as the symbol at the last cell
+          // If the symbol of the current position is the same as the symbol at the last cell
+          // of our possilbe win, it's a streak, so add it to the streak
           console.log(board[`${currentValue}`], board[`${array[currentIndex-1]}`])
           if (board[`${currentValue}`] === board[`${array[currentIndex-1]}`]) {
-            // push is a mutator. You will mutate the accumulator here, so 
+            // Hint: push is a mutator. You will mutate the accumulator here, so 
             // you won't have it as it was before. Consider what other possibilities there
-            // are
+            // are for returning a new value
             accumulator.push(currentValue)
           } else {
+            // If the symbol in the current and last position of the possible win are not
+            // the same, the streak is broken. 0 it out!
             accumulator = []
           }
         }
@@ -88,5 +85,6 @@ function checkForVerticalWin (board: Board) {
       return accumulator
     }, [])
   }
+  console.log('win', win)
   return win
 }
