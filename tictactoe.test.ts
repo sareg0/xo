@@ -127,7 +127,7 @@ test('makes a move', () => {
   })
 })
 
-test('checks for win', () => {
+test('checks for vertical win', () => {
   const winOne = checkForWin(verticalWinOne)
   const winTwo = checkForWin(verticalWinTwo)
   const winThree = checkForWin(verticalWinThree)
@@ -143,7 +143,6 @@ test('checks for diagonal win', () => {
 
   expect(winOne).toStrictEqual(["1","5","9"])
   expect(winTwo).toStrictEqual(["3","5","7"])
-  
 })
 
 test('checks for horizontal win', () => {
@@ -154,7 +153,6 @@ test('checks for horizontal win', () => {
   expect(winOne).toStrictEqual(["1","2","3"])
   expect(winTwo).toStrictEqual(["4","5","6"])
   expect(winThree).toStrictEqual(["7","8","9"])
-  
 })
 
 

@@ -30,7 +30,11 @@ export function createBoard() {
 }
 
 export function addMove(symbol: Piece, position: keyof Board) {
-  board[position] = symbol
+  if (Object.keys(board).includes(position.toString())) {
+    board[position] = symbol
+  } else {
+    throw Error('that is an invalid move!!')
+  }
   return board
 }
 
@@ -56,8 +60,7 @@ export function checkForWin (board: Board) {
     }
     win = possibleWin.reduce((accumulator, currentValue, currentIndex, array) => {
       if (board[`${currentValue}`] === null) {
-        // When there is no value in the cell, take our
-        // streak back to 0
+        // When there is no value in the cell, reset the streak of moves.
         // Possible improvement: only zero out the streak if there is a streak length
         accumulator = []
       } else {
