@@ -112,48 +112,71 @@ test('creates empty board', () => {
   expect(thing).toEqual(emptyBoard)
 })
 
-test('makes a move', () => {
-  const thing = addMove('x', 1)
-  expect(thing).toEqual({
-    1: 'x',
-    2: null,
-    3: null,
-    4: null,
-    5: null,
-    6: null,
-    7: null,
-    8: null,
-    9: null,
+describe('addMove', () => {
+  it('adds a move to the board', () => {
+    const board = createBoard()
+    addMove('x', 1, board)
+    expect(board).toEqual({
+      1: 'x',
+      2: null,
+      3: null,
+      4: null,
+      5: null,
+      6: null,
+      7: null,
+      8: null,
+      9: null,
+    })
+    addMove('o', 2, board)
+    expect(board).toEqual({
+      1: 'x',
+      2: 'o',
+      3: null,
+      4: null,
+      5: null,
+      6: null,
+      7: null,
+      8: null,
+      9: null,
+    })
   })
 })
 
-test('checks for vertical win', () => {
-  const winOne = checkForWin(verticalWinOne)
-  const winTwo = checkForWin(verticalWinTwo)
-  const winThree = checkForWin(verticalWinThree)
 
-  expect(winOne).toStrictEqual(["1","4","7"])
-  expect(winTwo).toStrictEqual(["2","5","8"])
-  expect(winThree).toStrictEqual(["3","6","9"])
+
+describe('checkForWin', () => {
+  it('checks for vertical win', () => {
+    const winOne = checkForWin(verticalWinOne)
+    const winTwo = checkForWin(verticalWinTwo)
+    const winThree = checkForWin(verticalWinThree)
+  
+    expect(winOne).toStrictEqual(["1","4","7"])
+    expect(winTwo).toStrictEqual(["2","5","8"])
+    expect(winThree).toStrictEqual(["3","6","9"])
+  })
+  it('checks for diagonal win', () => {
+    const winOne = checkForWin(diagonalWinOne)
+    const winTwo = checkForWin(diagonalWinTwo)
+  
+    expect(winOne).toStrictEqual(["1","5","9"])
+    expect(winTwo).toStrictEqual(["3","5","7"])
+  })
+  it('checks for horizontal win', () => {
+    const winOne = checkForWin(horizontalWinOne)
+    const winTwo = checkForWin(horizontalWinTwo)
+    const winThree = checkForWin(horizontalWinThree)
+  
+    expect(winOne).toStrictEqual(["1","2","3"])
+    expect(winTwo).toStrictEqual(["4","5","6"])
+    expect(winThree).toStrictEqual(["7","8","9"])
+  })
 })
 
-test('checks for diagonal win', () => {
-  const winOne = checkForWin(diagonalWinOne)
-  const winTwo = checkForWin(diagonalWinTwo)
 
-  expect(winOne).toStrictEqual(["1","5","9"])
-  expect(winTwo).toStrictEqual(["3","5","7"])
-})
 
-test('checks for horizontal win', () => {
-  const winOne = checkForWin(horizontalWinOne)
-  const winTwo = checkForWin(horizontalWinTwo)
-  const winThree = checkForWin(horizontalWinThree)
 
-  expect(winOne).toStrictEqual(["1","2","3"])
-  expect(winTwo).toStrictEqual(["4","5","6"])
-  expect(winThree).toStrictEqual(["7","8","9"])
-})
+
+
 
 
 //What happens when someone ties?

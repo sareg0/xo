@@ -13,23 +13,22 @@ export type Board = {
   9: null | Piece,
 }
 
-let board: Board = {
-  1: null,
-  2: null,
-  3: null,
-  4: null,
-  5: null,
-  6: null,
-  7: null,
-  8: null,
-  9: null,
+export function createBoard(): Board {
+  return {
+    1: null,
+    2: null,
+    3: null,
+    4: null,
+    5: null,
+    6: null,
+    7: null,
+    8: null,
+    9: null,
+  }
 }
 
-export function createBoard() {
-  return board
-}
-
-export function addMove(symbol: Piece, position: keyof Board) {
+export function addMove(symbol: Piece, position: keyof Board, board: Board) {
+  // && ['x','o'].includes(symbol
   if (Object.keys(board).includes(position.toString())) {
     board[position] = symbol
   } else {
