@@ -1,5 +1,3 @@
-// Board
-
 export type Piece = "x" | "o"
 export type Board = {
   1: null | Piece,
@@ -26,58 +24,62 @@ const POSSIBLE_WINS = [
 
 const WIN_LENGTH = 3
 
-// type GameType = {
-//   boardFunctions: Function
-//   board: Board
-//   winningStreak: [keyof Board, keyof Board, keyof Board] //string of the keys of board
-//   addMove: Function
-// }
-// TODO: how does one type the game? So far, adding GameType is not helpful
-export function newGame() {
-  const game = Object.create(boardFunctions)
-  game.board = {
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-    5: null,
-    6: null,
-    7: null,
-    8: null,
-    9: null,
+export class Game {
+  board: Board
+  winningStreak: null | [keyof Board, keyof Board, keyof Board]
+  player: Piece
+  constructor() {
+    this.board = {
+      1: null,
+      2: null,
+      3: null,
+      4: null,
+      5: null,
+      6: null,
+      7: null,
+      8: null,
+      9: null,
+    }
+    this.winningStreak = null
+    this.player = 'x'
   }
-  game.winningStreak = null
-  // Enforce whose turn it is; noughts or crosses
-  // game.turn = null
-  return game
-}
-
-const boardFunctions = {
-  addMove: function(symbol: Piece, position: keyof Board) {
+  addMove (position: keyof Board) {
     if (this.winningStreak) throw Error('game has already been won!!')
-    if (Object.keys(this.board).includes(position.toString()) && ['x', 'o'].includes(symbol)) {
-      this.board[position] = symbol
+    if (this.board[position] !== null) throw Error ('you cannot move to this position, it\'s already taken!')
+    if (Object.keys(this.board).includes(position.toString())) {
+      this.board[position] = this.player
       const winStreak = win(this.board)
       if (winStreak.length === WIN_LENGTH) {
-        this.winningStreak = winStreak
+        this.updateWinningStreak(winStreak)
+      } else {
+        this.changePlayer()
       }
     } else {
       throw Error('that is an invalid move!!')
     }
-  },
-} 
+  }
+  // can this be made private, so that it cannot be called by the instance, 
+  // and only inside a method?
+  changePlayer () {
+    this.player = this.player === 'x' ? 'o' : 'x'
+  }
+  updateWinningStreak (winStreak: [keyof Board, keyof Board, keyof Board]) {
+    this.winningStreak = winStreak
+  }
+}
 
 // // should we always run through the board, to find if there is a win? 
 // // are there other ways, to narrow down what to check for a win?
 // // What should we do if there is a tie? Should ties be impossible?
 // Can you determine a win WITHOUT a list of pre-determined wins?
-export function win (board: Board) {
+export function win (board: Board): [keyof Board, keyof Board, keyof Board] {
 
 
   let win = []
   for (const possibleWin of POSSIBLE_WINS) {
     if (win.length === 3) {
-      return win
+        // How can we avoid using `as`, and make sure the type is inferred through correct assignment?
+      return win as [keyof Board, keyof Board, keyof Board]
     }
     win = possibleWin.reduce((accumulator, currentValue, currentIndex, array) => {
       if (board[`${currentValue}`] === null) {
@@ -92,7 +94,6 @@ export function win (board: Board) {
         } else {
           // If the symbol of the current position is the same as the symbol at the last cell
           // of our possilbe win, it's a streak, so add it to the streak
-          console.log(board[`${currentValue}`], board[`${array[currentIndex-1]}`])
           if (board[`${currentValue}`] === board[`${array[currentIndex-1]}`]) {
             // Hint: push is a mutator. You will mutate the accumulator here, so 
             // you won't have it as it was before. Consider what other possibilities there
@@ -105,10 +106,9 @@ export function win (board: Board) {
           }
         }
       }
-      console.log('acc', accumulator)
       return accumulator
     }, [])
   }
-  console.log('win', win)
-  return win
+  // How can we avoid using `as`, and make sure the type is inferred through correct assignment?
+  return win as [keyof Board, keyof Board, keyof Board]
 }
