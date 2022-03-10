@@ -10,6 +10,7 @@ export type Board = {
   8: null | Piece,
   9: null | Piece,
 }
+type WinStreakType = [keyof Board, keyof Board, keyof Board]
 
 const POSSIBLE_WINS = [
   ["1", "2", "3"], //H
@@ -25,11 +26,12 @@ const POSSIBLE_WINS = [
 const WIN_LENGTH = 3
 
 export class Game {
+  id: string
   board: Board
-  winningStreak: null | [keyof Board, keyof Board, keyof Board]
+  winningStreak: null | WinStreakType
   player: Piece
-  constructor() {
-    this.board = {
+  constructor(id: string, board?: Board, player?: Piece, winningStreak?: WinStreakType) {
+    this.board = board || {
       1: null,
       2: null,
       3: null,
@@ -40,8 +42,9 @@ export class Game {
       8: null,
       9: null,
     }
-    this.winningStreak = null
-    this.player = 'x'
+    this.winningStreak = winningStreak || null
+    this.player = player || 'x'
+    this.id = id
   }
   addMove (position: keyof Board) {
     if (this.winningStreak) throw Error('game has already been won!!')
@@ -63,7 +66,7 @@ export class Game {
   changePlayer () {
     this.player = this.player === 'x' ? 'o' : 'x'
   }
-  updateWinningStreak (winStreak: [keyof Board, keyof Board, keyof Board]) {
+  updateWinningStreak (winStreak: WinStreakType) {
     this.winningStreak = winStreak
   }
 }
@@ -72,14 +75,14 @@ export class Game {
 // // are there other ways, to narrow down what to check for a win?
 // // What should we do if there is a tie? Should ties be impossible?
 // Can you determine a win WITHOUT a list of pre-determined wins?
-export function win (board: Board): [keyof Board, keyof Board, keyof Board] {
+export function win (board: Board): WinStreakType {
 
 
   let win = []
   for (const possibleWin of POSSIBLE_WINS) {
     if (win.length === 3) {
         // How can we avoid using `as`, and make sure the type is inferred through correct assignment?
-      return win as [keyof Board, keyof Board, keyof Board]
+      return win as WinStreakType
     }
     win = possibleWin.reduce((accumulator, currentValue, currentIndex, array) => {
       if (board[`${currentValue}`] === null) {
@@ -110,5 +113,5 @@ export function win (board: Board): [keyof Board, keyof Board, keyof Board] {
     }, [])
   }
   // How can we avoid using `as`, and make sure the type is inferred through correct assignment?
-  return win as [keyof Board, keyof Board, keyof Board]
+  return win as WinStreakType
 }

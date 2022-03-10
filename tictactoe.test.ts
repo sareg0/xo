@@ -107,9 +107,8 @@ const horizontalWinThree: Board = {
 }
 
 describe('new Game', () => {
-  // Add player input
-  const gameOne = new Game()
-  const gameTwo = new Game()
+  const gameOne = new Game("1")
+  const gameTwo = new Game("2")
 
   test('it can create new game instances', () => {
     expect(gameOne.board === gameTwo.board).toBe(false)
@@ -122,10 +121,16 @@ describe('new Game', () => {
     expect(gameTwo.player).toBe('x')
   })
 
+  test('it can represent a game in play', () => {
+  // TODO: figure out if named parameters are possible, for creating the game
+    const exisitingGame = new Game("1",verticalWinOne, 'x', [1,4,7])
+    expect(exisitingGame.board).toEqual(verticalWinOne)
+    expect(exisitingGame.winningStreak).toEqual([1,4,7])
+    expect(exisitingGame.player).toEqual("x")
+  })
+
   describe('addMove', () => {
     test('it can make a move to valid positions', () => {
-      const gameOne = new Game()
-      const gameTwo = new Game()
       gameOne.addMove(3)
       expect(gameOne.board).toEqual({
         1: null,
@@ -154,55 +159,23 @@ describe('new Game', () => {
     })
 
     test('it changes the player', () => {
-      const gameOne = new Game()
-      expect(gameOne.player).toBe("x") 
-      gameOne.addMove(3)
-      expect(gameOne.board).toEqual({
-        1: null,
-        2: null,
-        3: "x",
-        4: null,
-        5: null,
-        6: null,
-        7: null,
-        8: null,
-        9: null,
-      })
-      expect(gameOne.player).toBe("o") 
+      const freshGame = new Game('fresh')
+
+      expect(freshGame.player).toBe('x') 
+      freshGame.addMove(3)
+      expect(freshGame.player).toBe('o') 
+      freshGame.addMove(4)
+      expect(freshGame.player).toBe('x') 
     })
 
     test('it does not allow moving to a space that is already taken', () => {
-      const gameOne = new Game()
+      const gameOne = new Game("4")
       gameOne.addMove(3)
-      expect(gameOne.board).toEqual({
-        1: null,
-        2: null,
-        3: "x",
-        4: null,
-        5: null,
-        6: null,
-        7: null,
-        8: null,
-        9: null,
-      })
       expect(() => gameOne.addMove(3)).toThrow()
     })
-    // These tests cannot run, because they will fail the type checking.
-    // How might one still validate that the user cannot pass in invalid
-    // input? Or is it no longer possible?
-    // test('it cannot make a move to an invalid position', () => {
-    //   const gameOne = new Game()
-    //   expect(() => gameOne.addMove(15)).toThrow()
-    //   expect(gameOne.board).toEqual(emptyBoard)
-    // })
-    // test('it cannot make a move with an invalid piece', () => {
-    //   const gameOne = new Game()
-    //   expect(() => gameOne.addMove('*', 3)).toThrow()
-    //   expect(gameOne.board).toEqual(emptyBoard)
-    // })
 
     test('it updates the winningStreak of the game', () => {
-      const gameOne = new Game()
+      const gameOne = new Game("5")
       gameOne.addMove(1)
       expect(gameOne.winningStreak).toBeNull()
       gameOne.addMove(4)
@@ -216,7 +189,7 @@ describe('new Game', () => {
     })
 
     test('it throws an Error if the game is already won', () => {
-      const gameOne = new Game()
+      const gameOne = new Game("6")
       expect(gameOne.winningStreak).toBeNull()
       gameOne.addMove(1)
       gameOne.addMove(4)
