@@ -1,36 +1,41 @@
 export type Piece = "x" | "o"
-export type Board = {
-  1: null | Piece,
-  2: null | Piece,
-  3: null | Piece,
-  4: null | Piece,
-  5: null | Piece,
-  6: null | Piece,
-  7: null | Piece,
-  8: null | Piece,
-  9: null | Piece,
-}
-type WinStreakType = [keyof Board, keyof Board, keyof Board]
 
-const POSSIBLE_WINS = [
-  ["1", "2", "3"], //H
-  ["1", "4", "7"], //V
-  ["1", "5", "9"], //D
-  ["2", "5", "8"], //V
-  ["3", "6", "9"], //v
-  ["3", "5", "7"], //D
-  ["4", "5", "6"], //H
-  ["7", "8", "9"], //H
+export interface BoardInterface {
+  [key: number]: Piece | null;
+}
+// export type Board = {
+//   1: null | Piece,
+//   2: null | Piece,
+//   3: null | Piece,
+//   4: null | Piece,
+//   5: null | Piece,
+//   6: null | Piece,
+//   7: null | Piece,
+//   8: null | Piece,
+//   9: null | Piece,
+// }
+
+type WinType = [keyof BoardInterface, keyof BoardInterface, keyof BoardInterface]
+
+const POSSIBLE_WINS: [string, string, string][] = [
+  ['1', '2', '3'], //H
+  ['1', '4', '7'], //V
+  ['1', '5', '9'], //D
+  ['2', '5', '8'], //V
+  ['3', '6', '9'], //v
+  ['3', '5', '7'], //D
+  ['4', '5', '6'], //H
+  ['7', '8', '9'], //H
 ]
 
 const WIN_LENGTH = 3
 
 export class Game {
   id: string
-  board: Board
-  winningStreak: null | WinStreakType
+  board: BoardInterface
+  winningStreak: null | WinType
   player: Piece
-  constructor(id: string, board?: Board, player?: Piece, winningStreak?: WinStreakType) {
+  constructor(id: string, board?: BoardInterface, player?: Piece, winningStreak?: WinType) {
     this.board = board || {
       1: null,
       2: null,
@@ -46,14 +51,14 @@ export class Game {
     this.player = player || 'x'
     this.id = id
   }
-  addMove (position: keyof Board) {
+  addMove(position: keyof BoardInterface) {
     if (this.winningStreak) throw Error('game has already been won!!')
-    if (this.board[position] !== null) throw Error ('you cannot move to this position, it\'s already taken!')
+    if (this.board[position] !== null) throw Error('you cannot move to this position, it\'s already taken!')
     if (Object.keys(this.board).includes(position.toString())) {
       this.board[position] = this.player
-      const winStreak = win(this.board)
+      const winStreak = winCollector(this.board)
       if (winStreak.length === WIN_LENGTH) {
-        this.updateWinningStreak(winStreak)
+        this.updateWinningStreak(winStreak as unknown as WinType)
       } else {
         this.changePlayer()
       }
@@ -61,57 +66,71 @@ export class Game {
       throw Error('that is an invalid move!!')
     }
   }
-  // can this be made private, so that it cannot be called by the instance, 
-  // and only inside a method?
-  changePlayer () {
+  // TODO: make changePlayer private
+  changePlayer() {
     this.player = this.player === 'x' ? 'o' : 'x'
   }
-  updateWinningStreak (winStreak: WinStreakType) {
+  // TODO: make updateWinningStreak private
+  updateWinningStreak(winStreak: WinType) {
     this.winningStreak = winStreak
   }
 }
 
-// // should we always run through the board, to find if there is a win? 
-// // are there other ways, to narrow down what to check for a win?
-// // What should we do if there is a tie? Should ties be impossible?
-// Can you determine a win WITHOUT a list of pre-determined wins?
-export function win (board: Board): WinStreakType {
-
-
-  let win = []
-  for (const possibleWin of POSSIBLE_WINS) {
-    if (win.length === 3) {
-        // How can we avoid using `as`, and make sure the type is inferred through correct assignment?
-      return win as WinStreakType
+// go to each item on the board
+// if it is null leave it
+// if it is filled iwth a position then save it
+export const filterFilledPositions = (board: BoardInterface) => {
+  return Object.keys(board).reduce((previousValue: any[], currentValue: string) => {
+    if (board[currentValue as unknown as number] !== null) {
+      return [...previousValue, currentValue]
+    }  else {
+      return previousValue
     }
-    win = possibleWin.reduce((accumulator, currentValue, currentIndex, array) => {
-      if (board[`${currentValue}`] === null) {
-        // When there is no value in the cell, reset the streak of moves.
-        // Possible improvement: only zero out the streak if there is a streak length
-        accumulator = []
+  }, [])
+}
+
+export const winCollector = (board: BoardInterface) => {
+  const filteredPostions = filterFilledPositions(board)
+  // for each position in filtered positions
+  let winStreak: any = []
+  for (const position of filteredPostions) {
+    // get the possible wins
+    const winsForPosition =  filterWinsBy(position)
+    // for each possible win
+    const piece = board[position as unknown as number]
+    for (const win of winsForPosition) {
+      // if we got a full win, keep returning
+      // can we break?
+      if (winStreak.length === win.length) {
+        return winStreak
       } else {
-        if (currentIndex === 0) {
-          // If there is a symbol in the cell and it's the first position of our possible Win
-          // use it to start the streak
-          accumulator.push(currentValue)
+        // if we didn't get a streak for the last win, then reset
+        winStreak = []
+      }
+
+      for (const p of win) {
+        if (board[p as unknown as number] === piece) {
+          winStreak.push(p)
         } else {
-          // If the symbol of the current position is the same as the symbol at the last cell
-          // of our possilbe win, it's a streak, so add it to the streak
-          if (board[`${currentValue}`] === board[`${array[currentIndex-1]}`]) {
-            // Hint: push is a mutator. You will mutate the accumulator here, so 
-            // you won't have it as it was before. Consider what other possibilities there
-            // are for returning a new value
-            accumulator.push(currentValue)
-          } else {
-            // If the symbol in the current and last position of the possible win are not
-            // the same, the streak is broken. 0 it out!
-            accumulator = []
-          }
+          winStreak = []
         }
       }
-      return accumulator
-    }, [])
+    }
   }
-  // How can we avoid using `as`, and make sure the type is inferred through correct assignment?
-  return win as WinStreakType
+  return winStreak
 }
+
+// 1 => [[1, 4, 7], [1,2,3] ]
+// 1 => symbol is x
+// yes? then it's a win!
+// no? then it's not a win
+// check the position on the board
+
+// check what possible wins there are for this position onthe board
+export const filterWinsBy = (boardPosition: string) => {
+  return POSSIBLE_WINS.filter((pw) => pw.includes(boardPosition))
+}
+
+// can this be made private, so that it cannot be called by the instance, 
+// and only inside a method? Alos that it cannot be written to by 
+// anything outside the class

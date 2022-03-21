@@ -1,6 +1,6 @@
-import {Game, Board, win} from './tictactoe'
- 
-const emptyBoard: Board = {
+import { Game, BoardInterface, filterWinsBy, filterFilledPositions, winCollector } from './tictactoe'
+
+const emptyBoard: BoardInterface = {
   1: null,
   2: null,
   3: null,
@@ -12,7 +12,7 @@ const emptyBoard: Board = {
   9: null,
 }
 
-const verticalWinOne: Board = {
+const verticalWinOne: BoardInterface = {
   1: "x",
   2: null,
   3: null,
@@ -23,7 +23,7 @@ const verticalWinOne: Board = {
   8: null,
   9: null,
 }
-const verticalWinTwo: Board = {
+const verticalWinTwo: BoardInterface = {
   1: "x",
   2: "o",
   3: null,
@@ -35,7 +35,7 @@ const verticalWinTwo: Board = {
   9: null,
 }
 
-const verticalWinThree: Board = {
+const verticalWinThree: BoardInterface = {
   1: "x",
   2: null,
   3: "x",
@@ -47,7 +47,7 @@ const verticalWinThree: Board = {
   9: "x",
 }
 
-const diagonalWinOne: Board = {
+const diagonalWinOne: BoardInterface = {
   1: "x",
   2: null,
   3: null,
@@ -59,7 +59,7 @@ const diagonalWinOne: Board = {
   9: "x",
 }
 
-const diagonalWinTwo: Board = {
+const diagonalWinTwo: BoardInterface = {
   1: "x",
   2: null,
   3: "o",
@@ -71,7 +71,7 @@ const diagonalWinTwo: Board = {
   9: "x",
 }
 
-const horizontalWinOne: Board = {
+const horizontalWinOne: BoardInterface = {
   1: "o",
   2: "o",
   3: "o",
@@ -83,7 +83,7 @@ const horizontalWinOne: Board = {
   9: null,
 }
 
-const horizontalWinTwo: Board = {
+const horizontalWinTwo: BoardInterface = {
   1: "o",
   2: "o",
   3: null,
@@ -94,7 +94,7 @@ const horizontalWinTwo: Board = {
   8: null,
   9: null,
 }
-const horizontalWinThree: Board = {
+const horizontalWinThree: BoardInterface = {
   1: "o",
   2: "o",
   3: null,
@@ -105,6 +105,8 @@ const horizontalWinThree: Board = {
   8: "o",
   9: "o",
 }
+
+
 
 describe('new Game', () => {
   const gameOne = new Game("1")
@@ -143,7 +145,7 @@ describe('new Game', () => {
         8: null,
         9: null,
       })
-  
+
       gameTwo.addMove(8)
       expect(gameTwo.board).toEqual({
         1: null,
@@ -202,30 +204,60 @@ describe('new Game', () => {
   })
 })
 
-describe('win', () => {
+describe('winCollector', () => {
   it('checks for vertical win', () => {
-    const winOne = win(verticalWinOne)
-    const winTwo = win(verticalWinTwo)
-    const winThree = win(verticalWinThree)
-  
+    const winOne = winCollector(verticalWinOne)
+    const winTwo = winCollector(verticalWinTwo)
+    const winThree = winCollector(verticalWinThree)
+
     expect(winOne).toStrictEqual(["1","4","7"])
     expect(winTwo).toStrictEqual(["2","5","8"])
     expect(winThree).toStrictEqual(["3","6","9"])
   })
   it('checks for diagonal win', () => {
-    const winOne = win(diagonalWinOne)
-    const winTwo = win(diagonalWinTwo)
-  
+    const winOne = winCollector(diagonalWinOne)
+    const winTwo = winCollector(diagonalWinTwo)
+
     expect(winOne).toStrictEqual(["1","5","9"])
     expect(winTwo).toStrictEqual(["3","5","7"])
   })
   it('checks for horizontal win', () => {
-    const winOne = win(horizontalWinOne)
-    const winTwo = win(horizontalWinTwo)
-    const winThree = win(horizontalWinThree)
-  
+    const winOne = winCollector(horizontalWinOne)
+    const winTwo = winCollector(horizontalWinTwo)
+    const winThree = winCollector(horizontalWinThree)
+
     expect(winOne).toStrictEqual(["1","2","3"])
     expect(winTwo).toStrictEqual(["4","5","6"])
     expect(winThree).toStrictEqual(["7","8","9"])
+  })
+})
+
+describe('filterWinsBy', () => {
+  it('returns wins that include the given position win', () => {
+    expect(filterWinsBy("1")).toEqual([
+      [
+        "1",
+        "2",
+        "3",
+      ],
+      [
+        "1",
+        "4",
+        "7",
+      ],
+      [
+        "1",
+        "5",
+        "9",
+      ],
+    ])
+  })
+})
+
+
+describe('filterFilledPositions', () => {
+  it('returns board positions that have a piece in them', () => {
+    expect(filterFilledPositions(emptyBoard)).toEqual([])
+    expect(filterFilledPositions(verticalWinOne)).toEqual(["1", "4", "7"])
   })
 })
