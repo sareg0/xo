@@ -3,17 +3,6 @@ export type Piece = "x" | "o"
 export interface BoardInterface {
   [key: number]: Piece | null;
 }
-// export type Board = {
-//   1: null | Piece,
-//   2: null | Piece,
-//   3: null | Piece,
-//   4: null | Piece,
-//   5: null | Piece,
-//   6: null | Piece,
-//   7: null | Piece,
-//   8: null | Piece,
-//   9: null | Piece,
-// }
 
 type WinType = [keyof BoardInterface, keyof BoardInterface, keyof BoardInterface]
 
@@ -130,7 +119,3 @@ export const winCollector = (board: BoardInterface) => {
 export const filterWinsBy = (boardPosition: string) => {
   return POSSIBLE_WINS.filter((pw) => pw.includes(boardPosition))
 }
-
-// can this be made private, so that it cannot be called by the instance, 
-// and only inside a method? Alos that it cannot be written to by 
-// anything outside the class
